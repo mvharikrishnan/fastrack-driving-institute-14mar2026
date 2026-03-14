@@ -15,7 +15,7 @@ export default function CTASection() {
       />
 
       {/* Steering wheel watermark */}
-      <svg className="absolute right-16 top-1/2 -translate-y-1/2 w-64 h-64 opacity-5 hidden lg:block" viewBox="0 0 100 100" fill="none">
+      <svg className="absolute right-16 top-1/2 -translate-y-1/2 w-64 h-64 opacity-5 hidden lg:block" style={{ animation: "spin 8s linear infinite" }} viewBox="0 0 100 100" fill="none">
         <circle cx="50" cy="50" r="45" stroke="#F58220" strokeWidth="3" />
         <circle cx="50" cy="50" r="10" stroke="#F58220" strokeWidth="3" />
         <line x1="50" y1="5" x2="50" y2="40" stroke="#F58220" strokeWidth="3" />
