@@ -3,12 +3,8 @@ const galleryItems = [
     id: 1,
     bg: "from-[#F58220] to-[#D96E15]",
     label: "Driving Lessons",
-    icon: (
-      <svg className="w-14 h-14 text-black/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1" />
-      </svg>
-    ),
+    image: "/fastrack-driving.png",
+    icon: null,
   },
   {
     id: 2,
@@ -95,9 +91,14 @@ export default function GallerySection() {
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${item.bg}`} />
 
-              <div className="absolute inset-0 flex items-center justify-center">
-                {item.icon}
-              </div>
+              {"image" in item && item.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={item.image} alt={item.label} className="absolute inset-0 w-full h-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  {item.icon}
+                </div>
+              )}
 
               {/* Hover overlay */}
               <div className="gallery-overlay absolute inset-0 bg-[#F58220]/20 opacity-0 transition-opacity duration-300" />
