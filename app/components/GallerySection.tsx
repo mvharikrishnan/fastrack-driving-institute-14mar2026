@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
 const galleryItems = [
   {
     id: 1,
@@ -59,58 +63,127 @@ const galleryItems = [
   },
 ];
 
+type GalleryItem = (typeof galleryItems)[number];
+
 export default function GallerySection() {
+  const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightbox(null);
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [lightbox]);
+
   return (
-    <section id="gallery" className="py-24 bg-[#0D0D0D] relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#F58220]/5 rounded-full blur-[100px]" />
+    <>
+      <section id="gallery" className="py-24 bg-[#0D0D0D] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#F58220]/5 rounded-full blur-[100px]" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14">
-          <span className="inline-flex items-center gap-2 text-[#F58220] font-semibold text-xs uppercase tracking-widest mb-4">
-            <span className="w-6 h-px bg-[#F58220]" />
-            Gallery
-            <span className="w-6 h-px bg-[#F58220]" />
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">
-            Life at <span className="text-gradient">Fastrack</span>
-          </h2>
-          <p className="text-white/40 max-w-xl mx-auto">
-            A glimpse into our training sessions, vehicles, and the journey of our
-            students from first lesson to license.
-          </p>
-        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <span className="inline-flex items-center gap-2 text-[#F58220] font-semibold text-xs uppercase tracking-widest mb-4">
+              <span className="w-6 h-px bg-[#F58220]" />
+              Gallery
+              <span className="w-6 h-px bg-[#F58220]" />
+            </span>
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight">
+              Life at <span className="text-gradient">Fastrack</span>
+            </h2>
+            <p className="text-white/40 max-w-xl mx-auto">
+              A glimpse into our training sessions, vehicles, and the journey of our
+              students from first lesson to license.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-          {galleryItems.map((item, idx) => (
-            <div
-              key={item.id}
-              className={`gallery-img relative overflow-hidden rounded-2xl cursor-pointer border border-white/5 hover:border-[#F58220]/40 transition-all duration-300 ${
-                idx === 0 ? "md:col-span-2 md:row-span-2" : ""
-              }`}
-              style={{ minHeight: idx === 0 ? "300px" : "160px" }}
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br ${item.bg}`} />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            {galleryItems.map((item, idx) => (
+              <div
+                key={item.id}
+                onClick={() => setLightbox(item)}
+                className={`gallery-img relative overflow-hidden rounded-2xl cursor-pointer border border-white/5 hover:border-[#F58220]/40 transition-all duration-300 group ${
+                  idx === 0 ? "md:col-span-2 md:row-span-2" : ""
+                }`}
+                style={{ minHeight: idx === 0 ? "300px" : "160px" }}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${item.bg}`} />
 
-              {"image" in item && item.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.image} alt={item.label} className="absolute inset-0 w-full h-full object-cover" />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {item.icon}
+                {"image" in item && item.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={item.image} alt={item.label} className="absolute inset-0 w-full h-full object-cover" />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {item.icon}
+                  </div>
+                )}
+
+                {/* Hover overlay with zoom icon */}
+                <div className="gallery-overlay absolute inset-0 bg-[#F58220]/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div className="bg-black/50 rounded-full p-3">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0zm-3-3v6m-3-3h6" />
+                    </svg>
+                  </div>
                 </div>
-              )}
 
-              {/* Hover overlay */}
-              <div className="gallery-overlay absolute inset-0 bg-[#F58220]/20 opacity-0 transition-opacity duration-300" />
-
-              {/* Label */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                <span className="text-white text-sm font-semibold">{item.label}</span>
+                {/* Label */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                  <span className="text-white text-sm font-semibold">{item.label}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+          onClick={() => setLightbox(null)}
+        >
+          <div
+            className="relative max-w-4xl w-full mx-4 rounded-2xl overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setLightbox(null)}
+              className="absolute top-3 right-3 z-10 bg-black/60 hover:bg-[#F58220] text-white rounded-full p-2 transition-colors duration-200"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Content */}
+            {"image" in lightbox && lightbox.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={lightbox.image}
+                alt={lightbox.label}
+                className="w-full h-auto max-h-[80vh] object-contain bg-[#111]"
+              />
+            ) : (
+              <div className={`flex items-center justify-center bg-gradient-to-br ${lightbox.bg} h-80`}>
+                {lightbox.icon}
+              </div>
+            )}
+
+            {/* Label bar */}
+            <div className="bg-[#1A1A1A] px-6 py-4">
+              <p className="text-white font-semibold text-lg">{lightbox.label}</p>
+              <p className="text-white/40 text-sm">Fastrack Driving Institute</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
